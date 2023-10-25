@@ -6,6 +6,7 @@ require('dotenv').config(); // Load environment variables from .env
 let expectedOtp;
 
 /*
+endpoint: /generate-otp
 function: generateOtp
 description: generate OTP (One Time Password)
 */
@@ -18,7 +19,7 @@ exports.generateOtp = async (req, res) => {
 
         //check if username already exist
         const existingUser = users.filter(user => user.username == userData.username);
-        console.log("Exis: :",existingUser)
+        
         if (!_.isEmpty(existingUser)) {
             throw "Username already exist";
         }
@@ -38,8 +39,9 @@ exports.generateOtp = async (req, res) => {
 }
 
 /*
-function: generateOtp
-description: generate OTP (One Time Password)
+endpoint: /validate-otp/:otp
+function: validateOtp
+description: validate OTP (One Time Password)
 */
 exports.validateOtp = async (req, res) => {
     try {

@@ -23,6 +23,7 @@ function verifyToken(req, res, next) {
 }
 
 /*
+endpoint: /login
 function: login
 description: login user
 */
@@ -46,6 +47,8 @@ exports.login = async (req, res) => {
             const token = jwt.sign(userData, secretKey);
             res.status(200).send({
                 token: token,
+                name: user.name,
+                username: user.username,
                 time: new Date()
             });
         }
@@ -59,6 +62,7 @@ exports.login = async (req, res) => {
 }
 
 /*
+endpoint: /register
 function: register
 description: register/create user account
 */
