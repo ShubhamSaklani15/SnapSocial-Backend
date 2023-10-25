@@ -1,7 +1,29 @@
 const userModel = require('../model/user');
 const _ = require('lodash');
+const jwt = require('jsonwebtoken');
+require('dotenv').config(); // Load environment variables from .env
 
 /*
+function: verifyToken
+description: Authentication middleware
+*/
+function verifyToken(req, res, next) {
+    try {
+        const token = req.headers['authorization'];
+        if (!token) return res.status(401).send('Unauthorized');
+
+        jwt.verify(token, secretKey, (err, user) => {
+            if (err) return res.status(403).send('Forbidden');
+            req.user = user;
+            next();
+        });
+    } catch (error) {
+        console.log("Error inside verifyToken: ", error);
+    }
+}
+
+/*
+endpoint: /login
 function: login
 description: login user
 */
@@ -21,13 +43,18 @@ exports.login = async (req, res) => {
         } else if (user.password !== userData.password) {
             throw "Invalid password";
         } else {
+            const secretKey = process.env.JWT_TOKEN_KEY;
+            const token = jwt.sign(userData, secretKey);
             res.status(200).send({
-                user: user,
+                token: token,
+                name: user.name,
+                username: user.username,
                 time: new Date()
             });
         }
     } catch (error) {
-        res.send({
+        console.log("Error inside login: ", error);
+        res.status(401).send({
             message: error,
             time: new Date()
         });
@@ -35,20 +62,13 @@ exports.login = async (req, res) => {
 }
 
 /*
+endpoint: /register
 function: register
 description: register/create user account
 */
 exports.register = async (req, res) => {
     try {
         const userData = req.body;
-        //joi validation
-        const users = await userModel.find();
-
-        //check if username already exist
-        const existingUser = users.filter(user => user.username == userData.username);
-        if (!_.isEmpty(existingUser)) {
-            throw "Username already exist";
-        }
 
         //create and save user
         const user = new userModel({
@@ -66,7 +86,8 @@ exports.register = async (req, res) => {
             time: new Date()
         });
     } catch (error) {
-        res.send({
+        console.log("Error inside register: ", error);
+        res.status(401).send({
             message: error,
             time: new Date()
         });
