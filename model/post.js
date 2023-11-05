@@ -17,9 +17,14 @@ const likeSchema = new mongoose.Schema({
     users_liked: [String],
 });
 
+const authorSchema = new mongoose.Schema({
+    name: String,
+    username: String,
+});
+
 const postSchema = new mongoose.Schema({
     message: String,
-    author: String,
+    author: authorSchema,
     timestamp: String,
     likes: likeSchema,
     comments: [commentSchema]

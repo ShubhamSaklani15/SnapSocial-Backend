@@ -44,7 +44,7 @@ exports.getPosts = async (req, res) => {
 
     try {
         //fetch all posts in batches
-        const posts = await postModel.find({ author: username })
+        const posts = await postModel.find({ 'author.username': username })
             .sort({ timestamp: -1 })
             .skip(skip)
             .limit(perPage)
