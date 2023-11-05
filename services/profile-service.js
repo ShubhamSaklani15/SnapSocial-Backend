@@ -9,9 +9,8 @@ description: get profile image
 exports.getProfileImage = async (req, res) => {
     console.log("Inside getProfileImage");
     const username = req.params.username;
-    try {
+        try {
         const user = await userModel.findOne({ username: username });
-        console.log("profile: ", user)
         if (!user) {
             throw "User Not Found";
         } else if (JSON.stringify(user.profile) === JSON.stringify({})) {
