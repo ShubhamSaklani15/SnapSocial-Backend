@@ -37,10 +37,18 @@ description: API endpoint to fetch posts of specific user
 */
 exports.getPosts = async (req, res) => {
     console.log("Inside getPosts");
+    const username = req.params.username;
+    const pageNumber = parseInt(req.params.pageNumber) || 1;
+    const perPage = 10; // Number of posts per page
+    const skip = (pageNumber - 1) * perPage;
+
     try {
-        const username = req.params.username;
-        //fetch all posts
-        const posts = await postModel.find({ author: username });
+        //fetch all posts in batches
+        const posts = await postModel.find({ author: username })
+            .sort({ timestamp: -1 })
+            .skip(skip)
+            .limit(perPage)
+            .exec();
         res.status(200).send({
             posts: posts,
             time: new Date()

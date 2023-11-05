@@ -25,6 +25,6 @@ router.get('/get-profile-image/:username', profileService.getProfileImage);
 /* post routes */
 router.post('/add-new-post', postService.addNewPost);
 
-router.get('/get-posts/:username', postService.getPosts);
+router.get('/get-posts/:username/:pageNumber', postService.getPosts);
 
 module.exports = router;
