@@ -92,3 +92,27 @@ exports.getPosts = async (req, res) => {
         });
     }
 }
+
+/*
+endpoint: /delete-post
+function: deletePost
+description: API endpoint to delete post of a user
+*/
+exports.deletePost = async (req, res) => {
+    console.log("Inside deletePost");
+    const id = req.params.id;
+    try {
+        //delete post
+        const response = await postModel.deleteOne({ _id: id });
+        res.status(200).send({
+            message: "Post deleted successfully",
+            time: new Date()
+        });
+    } catch (error) {
+        console.log("Error inside deletePost: ", error);
+        res.status(401).send({
+            message: error,
+            time: new Date()
+        });
+    }
+}
