@@ -13,7 +13,8 @@ exports.addNewPost = async (req, res) => {
         const post = new postModel({
             message: postData.message,
             author: postData.author,
-            timestamp: postData.timestamp
+            timestamp: postData.timestamp,
+            likes: postData.likes
         });
         post.save();
 
@@ -23,6 +24,31 @@ exports.addNewPost = async (req, res) => {
         });
     } catch (error) {
         console.log("Error inside addNewPost: ", error);
+        res.status(401).send({
+            message: error,
+            time: new Date()
+        });
+    }
+}
+
+/*
+endpoint: /update-post
+function: updatePost
+description: API endpoint to update post
+*/
+exports.updatePost = async (req, res) => {
+    console.log("Inside updatePost");
+    try {
+        let post = req.body;
+        const _id = post._id;
+        post = await postModel.findByIdAndUpdate(_id, post);
+
+        res.status(200).send({
+            message: "Post updated successfully",
+            time: new Date()
+        });
+    } catch (error) {
+        console.log("Error inside updatePost: ", error);
         res.status(401).send({
             message: error,
             time: new Date()
@@ -52,7 +78,7 @@ exports.getAllPosts = async (req, res) => {
             posts: posts,
             time: new Date()
         });
-    } catch (error) {
+            } catch (error) {
         console.log("Error inside getAllPosts: ", error);
         res.status(401).send({
             message: error,
