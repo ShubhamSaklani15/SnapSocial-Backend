@@ -39,12 +39,25 @@ description: API endpoint to update post
 exports.updatePost = async (req, res) => {
     console.log("Inside updatePost");
     try {
-        let post = req.body;
-        const _id = post._id;
-        post = await postModel.findByIdAndUpdate(_id, post);
+        const _id = req.params.id;
+        const username = req.params.username;
+        const post = await postModel.findOne({ _id: _id });
+        const index = post?.likes?.users_liked?.indexOf(username) ?? -1;
 
+        if (index === -1) {
+            post?.likes?.users_liked?.push(username);
+            if (post && post.likes) {
+                post.likes.count = (post.likes.count || 0) + 1;
+            }
+        } else {
+            post?.likes?.users_liked?.splice(index, 1);
+            if (post && post.likes) {
+                post.likes.count = (post.likes.count || 0) - 1;
+            }
+        }
+        post.save();
         res.status(200).send({
-            message: "Post updated successfully",
+            message: post,
             time: new Date()
         });
     } catch (error) {
@@ -78,7 +91,7 @@ exports.getAllPosts = async (req, res) => {
             posts: posts,
             time: new Date()
         });
-            } catch (error) {
+    } catch (error) {
         console.log("Error inside getAllPosts: ", error);
         res.status(401).send({
             message: error,

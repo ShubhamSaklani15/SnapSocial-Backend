@@ -29,7 +29,7 @@ router.get('/get-all-posts/:pageNumber', postService.getAllPosts);
 
 router.get('/get-posts/:username/:pageNumber', postService.getPosts);
 
-router.patch('/update-post',postService.updatePost);
+router.get('/update-post/:id/:username',postService.updatePost);
 
 router.delete('/delete-post/:id', postService.deletePost);
 
