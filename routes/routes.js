@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authService = require("../services/auth-service");
+const verifyToken = require('../services/verify-token');
 const validationService = require("../services/validation-service");
 const profileService = require("../services/profile-service");
 const postService = require("../services/post-service");
@@ -18,19 +19,19 @@ router.post("/validate-otp/:otp", validationService.validateOtp);
 router.post("/login", authService.login);
 
 /* profile routes */
-router.post('/update-profile-image', upload.single('image'), profileService.updateProfileImage);
+router.post('/update-profile-image', upload.single('image'), verifyToken, profileService.updateProfileImage);
 
-router.get('/get-profile-image/:username', profileService.getProfileImage);
+router.get('/get-profile-image/:username', verifyToken, profileService.getProfileImage);
 
 /* post routes */
-router.post('/add-new-post', postService.addNewPost);
+router.post('/add-new-post', verifyToken, postService.addNewPost);
 
-router.get('/get-all-posts/:pageNumber', postService.getAllPosts);
+router.get('/get-all-posts/:pageNumber', verifyToken, postService.getAllPosts);
 
-router.get('/get-posts/:username/:pageNumber', postService.getPosts);
+router.get('/get-posts/:username/:pageNumber', verifyToken, postService.getPosts);
 
-router.get('/update-post/:id/:username',postService.updatePost);
+router.get('/update-post/:id/:username', verifyToken, postService.updatePost);
 
-router.delete('/delete-post/:id', postService.deletePost);
+router.delete('/delete-post/:id', verifyToken, postService.deletePost);
 
 module.exports = router;
