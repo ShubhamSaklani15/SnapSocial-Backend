@@ -3,24 +3,6 @@ const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 require('dotenv').config(); // Load environment variables from .env
 
-/*
-function: verifyToken
-description: Authentication middleware
-*/
-function verifyToken(req, res, next) {
-    try {
-        const token = req.headers['authorization'];
-        if (!token) return res.status(401).send('Unauthorized');
-
-        jwt.verify(token, secretKey, (err, user) => {
-            if (err) return res.status(403).send('Forbidden');
-            req.user = user;
-            next();
-        });
-    } catch (error) {
-        console.log("Error inside verifyToken: ", error);
-    }
-}
 
 /*
 endpoint: /login
@@ -44,7 +26,8 @@ exports.login = async (req, res) => {
             throw "Invalid password";
         } else {
             const secretKey = process.env.JWT_TOKEN_KEY;
-            const token = jwt.sign(userData, secretKey);
+            const expiresInHours = process.env.JWT_TOKEN_EXP
+            const token = jwt.sign(userData, secretKey, { expiresIn: `${expiresInHours}h` });
             res.status(200).send({
                 token: token,
                 name: user.name,
