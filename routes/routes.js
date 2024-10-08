@@ -5,6 +5,7 @@ const verifyToken = require('../services/verify-token');
 const validationService = require("../services/validation-service");
 const profileService = require("../services/profile-service");
 const postService = require("../services/post-service");
+const userService = require("../services/user-service");
 const multer = require('multer');
 
 // Multer setup
@@ -33,5 +34,8 @@ router.get('/get-posts/:username/:pageNumber', verifyToken, postService.getPosts
 router.get('/update-post/:id/:username', verifyToken, postService.updatePost);
 
 router.delete('/delete-post/:id', verifyToken, postService.deletePost);
+
+/* user routes */
+router.get('/get-new-users', verifyToken, userService.getNewUsers);
 
 module.exports = router;
