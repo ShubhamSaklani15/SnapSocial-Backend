@@ -39,7 +39,7 @@ exports.updateProfileImage = async (req, res) => {
     // Resize and compress the image
     const processedImage = await sharp(req.file.buffer)
         .resize(200, 200) // Resize to 200x200 pixels
-        .jpeg({ quality: 80 }) // Compress and convert to JPEG with 50% quality
+        .jpeg({ quality: 80 }) // Compress and convert to JPEG with 80% quality
         .toBuffer();
 
     const profile = {
