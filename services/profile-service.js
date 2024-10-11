@@ -1,5 +1,6 @@
 const userModel = require('../model/user');
 const _ = require('lodash');
+const sharp = require('sharp');
 
 /*
 endpoint: /get-profile-image/:username
@@ -9,7 +10,7 @@ description: get profile image
 exports.getProfileImage = async (req, res) => {
     console.log("Inside getProfileImage");
     const username = req.params.username;
-        try {
+    try {
         const user = await userModel.findOne({ username: username });
         if (!user) {
             throw "User Not Found";
@@ -35,9 +36,15 @@ description: upload profile image
 */
 exports.updateProfileImage = async (req, res) => {
     console.log("Inside updateProfileImage...");
+    // Resize and compress the image
+    const processedImage = await sharp(req.file.buffer)
+        .resize(200, 200) // Resize to 200x200 pixels
+        .jpeg({ quality: 80 }) // Compress and convert to JPEG with 80% quality
+        .toBuffer();
+
     const profile = {
-        data: req.file.buffer,
-        contentType: req.file.mimetype
+        data: processedImage,
+        contentType: 'image/jpeg'
     }
     try {
         const user = await userModel.findOne({ username: req.body.username });

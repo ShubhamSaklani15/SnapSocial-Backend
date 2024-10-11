@@ -1,3 +1,4 @@
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const postModel = require('../model/post');
 
 /*
@@ -150,6 +151,29 @@ exports.deletePost = async (req, res) => {
     } catch (error) {
         console.log("Error inside deletePost: ", error);
         res.status(401).send({
+            message: error,
+            time: new Date()
+        });
+    }
+}
+
+/*
+endpoint: /rewrite-post
+function: rewritePost
+description: API to rewrite post (from gemini api) based on user prompt
+*/
+
+exports.rewritePost = async (req, res) => {
+    console.log("Inside rewritePost");
+    const prompt = `Rewrite ${req.body.prompt}`;
+    try {
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent(prompt);
+        res.json({ text: result.response.text() });
+    } catch (error) {
+        console.error({ error }, "Error inside rewritePost: ");
+        res.status(500).send({
             message: error,
             time: new Date()
         });

@@ -35,6 +35,8 @@ router.get('/update-post/:id/:username', verifyToken, postService.updatePost);
 
 router.delete('/delete-post/:id', verifyToken, postService.deletePost);
 
+router.post('/rewrite-post', verifyToken, postService.rewritePost);
+
 /* user routes */
 router.get('/get-new-users', verifyToken, userService.getNewUsers);
 
